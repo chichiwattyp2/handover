@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chat Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="8" fill="#25D366"/>
+                    <path d="M20 8C13.4 8 8 13.4 8 20C8 22.4 8.7 24.6 9.9 26.5L8.2 31.8L13.7 30.1C15.5 31.2 17.7 31.8 20 31.8C26.6 31.8 32 26.4 32 19.8C32 13.3 26.6 8 20 8Z" fill="white"/>
+                </svg>
+                <h1>WhatsApp Chat Analyzer</h1>
+            </div>
+            <p class="tagline">AI-powered conversation insights</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="upload-card">
+                <div class="upload-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 15V3M12 3L8 7M12 3L16 7" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L2 19C2 20.1046 2.89543 21 4 21L20 21C21.1046 21 22 20.1046 22 19V17" stroke="#25D366" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <h2>Upload Your WhatsApp Chat</h2>
+                <p class="upload-description">
+                    Export your WhatsApp chat (without media) and upload the .txt file here
+                </p>
+
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="chatFile" name="chat_file" accept=".txt" required>
+                        <label for="chatFile" id="fileLabel">
+                            <span class="file-label-text">Choose File</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="analyzeBtn" class="btn-primary">
+                        <span class="btn-text">Analyze Chat</span>
+                        <span class="btn-loader" style="display: none;">
+                            <span class="loader"></span>
+                            Analyzing...
+                        </span>
+                    </button>
+                </form>
+
+                <div class="help-text">
+                    <details>
+                        <summary>How to export WhatsApp chat?</summary>
+                        <div class="help-content">
+                            <ol>
+                                <li>Open WhatsApp and go to the chat you want to analyze</li>
+                                <li>Tap the three dots (⋮) or chat name at the top</li>
+                                <li>Select <strong>More</strong> → <strong>Export chat</strong></li>
+                                <li>Choose <strong>Without Media</strong></li>
+                                <li>Save the .txt file and upload it here</li>
+                            </ol>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="results-section" style="display: none;">
+            <!-- Metadata Card -->
+            <div class="result-card metadata-card">
+                <h3>Conversation Overview</h3>
+                <div class="metadata-grid">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Participants</span>
+                        <span class="metadata-value" id="participants">-</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Messages</span>
+                        <span class="metadata-value" id="messageCount">-</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Date Range</span>
+                        <span class="metadata-value" id="dateRange">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="result-card">
+                <h3>📝 Conversation Summary</h3>
+                <div id="summary" class="summary-content">-</div>
+            </div>
+
+            <!-- Sentiment Card -->
+            <div class="result-card">
+                <h3>😊 Sentiment Analysis</h3>
+                <div class="sentiment-overall">
+                    <div class="sentiment-badge" id="sentimentBadge">
+                        <span class="sentiment-icon" id="sentimentIcon">-</span>
+                        <span class="sentiment-label" id="sentimentLabel">-</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <span class="confidence-label">Confidence:</span>
+                        <div class="confidence-track">
+                            <div class="confidence-fill" id="confidenceFill"></div>
+                        </div>
+                        <span class="confidence-value" id="confidenceValue">-</span>
+                    </div>
+                </div>
+                <p class="sentiment-explanation" id="sentimentExplanation">-</p>
+
+                <!-- Participant Sentiments -->
+                <div id="participantSentiments" class="participant-sentiments"></div>
+            </div>
+
+            <!-- Key Topics Card -->
+            <div class="result-card">
+                <h3>🏷️ Key Topics</h3>
+                <div id="keyTopics" class="topics-list"></div>
+            </div>
+
+            <!-- Actionables Card -->
+            <div class="result-card actionables-card">
+                <h3>✅ Action Items</h3>
+                <div id="actionables" class="actionables-list"></div>
+            </div>
+
+            <!-- Insights Card -->
+            <div class="result-card">
+                <h3>💡 Conversation Insights</h3>
+                <div id="insights" class="insights-content"></div>
+            </div>
+        </section>
+
+        <!-- Error Section -->
+        <section id="errorSection" class="error-section" style="display: none;">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <h3>Oops! Something went wrong</h3>
+                <p id="errorMessage">-</p>
+                <button onclick="location.reload()" class="btn-secondary">Try Again</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by Claude AI | Built with Flask & Python</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
