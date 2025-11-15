@@ -32,13 +32,15 @@ class WhatsAppChatParser:
 
     # Different WhatsApp export formats
     PATTERNS = [
-        # Format: 1/15/25, 10:30 AM - John: Message
+        # Format: 2024/05/06, 11:07 - John: Message (YYYY/MM/DD - common in many regions)
+        r'(\d{4}/\d{1,2}/\d{1,2},\s+\d{1,2}:\d{2}(?::\d{2})?)\s*[-–]\s*([^:]+?):\s*(.*)',
+        # Format: 1/15/25, 10:30 AM - John: Message (M/D/YY with AM/PM)
         r'(\d{1,2}/\d{1,2}/\d{2,4},\s+\d{1,2}:\d{2}(?:\s*[AP]M)?)\s*[-–]\s*([^:]+?):\s*(.*)',
-        # Format: [1/15/25, 10:30:45 AM] John: Message
+        # Format: [1/15/25, 10:30:45 AM] John: Message (bracketed format)
         r'\[(\d{1,2}/\d{1,2}/\d{2,4},\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)\]\s*([^:]+?):\s*(.*)',
-        # Format: 15/01/25, 10:30 - John: Message (DD/MM/YY)
+        # Format: 15/01/25, 10:30 - John: Message (DD/MM/YY or M/D/YY 24-hour)
         r'(\d{1,2}/\d{1,2}/\d{2,4},\s+\d{1,2}:\d{2}(?::\d{2})?)\s*[-–]\s*([^:]+?):\s*(.*)',
-        # Format: 2025-01-15, 10:30 - John: Message (ISO-like)
+        # Format: 2025-01-15, 10:30 - John: Message (ISO-like with hyphens)
         r'(\d{4}-\d{1,2}-\d{1,2},\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)\s*[-–]\s*([^:]+?):\s*(.*)',
     ]
 
@@ -130,6 +132,8 @@ class WhatsAppChatParser:
         except:
             # Fallback: try common formats explicitly
             formats = [
+                '%Y/%m/%d, %H:%M',
+                '%Y/%m/%d, %H:%M:%S',
                 '%m/%d/%y, %I:%M %p',
                 '%m/%d/%Y, %I:%M %p',
                 '%d/%m/%y, %H:%M',
