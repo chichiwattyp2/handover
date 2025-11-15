@@ -35,6 +35,15 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon"""
+    from flask import send_from_directory
+    import os
+    favicon_path = os.path.join(app.root_path, 'static')
+    return send_from_directory(favicon_path, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
 @app.route('/health')
 def health():
     """Health check endpoint"""
