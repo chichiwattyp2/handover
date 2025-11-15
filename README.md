@@ -76,6 +76,17 @@ An AI-powered web application that analyzes WhatsApp conversations to provide in
 5. Choose **Without Media** (to keep file size small)
 6. Save the `.txt` file to your computer
 
+### Supported Chat Formats
+
+The analyzer automatically detects and parses multiple WhatsApp export formats:
+
+- ✅ **YYYY/MM/DD, HH:MM** - `2025/02/20, 14:25` (Most common international format)
+- ✅ **M/D/YY, HH:MM AM/PM** - `11/10/24, 9:15 AM` (US format)
+- ✅ **DD/MM/YY, HH:MM** - `20/02/25, 14:25` (European format)
+- ✅ **[Bracketed formats]** - `[11/10/24, 9:15:45 AM]`
+- ✅ **Multi-line messages** - Automatically concatenated
+- ✅ **System notifications** - Identified and filtered
+
 ### Analyzing the Chat
 
 1. Open the WhatsApp Chat Analyzer in your browser
